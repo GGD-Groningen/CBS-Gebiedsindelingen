@@ -168,14 +168,60 @@ test_that("every row in pc_data_export is present in pc_data", {
 
 # Test that every row in pc_data_export is fully filled
 test_that("every row in pc_data_export is fully filled", {
-  expect_equal(nrow(pc_data_export), nrow(pc_data_export %>% filter_all(any_vars(. != ""))),
-               info = "Every row in pc_data_export should be fully filled")
+  # Check for NA values (resulting from failed left joins)
+  rows_with_na <- pc_data_export %>% 
+    filter_all(any_vars(is.na(.)))
+  
+  # Check for empty strings
+  rows_with_empty <- pc_data_export %>% 
+    filter_all(any_vars(. == ""))
+  
+  # Report specific issues
+  if (nrow(rows_with_na) > 0) {
+    cat("Found", nrow(rows_with_na), "rows with NA values (likely from failed left joins)\n")
+    print(head(rows_with_na, 3))
+  }
+  
+  if (nrow(rows_with_empty) > 0) {
+    cat("Found", nrow(rows_with_empty), "rows with empty strings\n")
+    print(head(rows_with_empty, 3))
+  }
+  
+  # Test should fail if there are any missing values
+  expect_equal(nrow(rows_with_na), 0,
+               info = paste("Found", nrow(rows_with_na), "rows with NA values in pc_data_export"))
+  
+  expect_equal(nrow(rows_with_empty), 0,
+               info = paste("Found", nrow(rows_with_empty), "rows with empty strings in pc_data_export"))
 })
 
 # Test that every row in pc_data_export_pc6 is fully filled
 test_that("every row in pc_data_export_pc6 is fully filled", {
-  expect_equal(nrow(pc_data_export_pc6), nrow(pc_data_export_pc6 %>% filter_all(any_vars(. != ""))),
-               info = "Every row in pc_data_export_pc6 should be fully filled")
+  # Check for NA values (resulting from failed left joins)
+  rows_with_na <- pc_data_export_pc6 %>% 
+    filter_all(any_vars(is.na(.)))
+  
+  # Check for empty strings
+  rows_with_empty <- pc_data_export_pc6 %>% 
+    filter_all(any_vars(. == ""))
+  
+  # Report specific issues
+  if (nrow(rows_with_na) > 0) {
+    cat("Found", nrow(rows_with_na), "rows with NA values in pc_data_export_pc6 (likely from failed left joins)\n")
+    print(head(rows_with_na, 3))
+  }
+  
+  if (nrow(rows_with_empty) > 0) {
+    cat("Found", nrow(rows_with_empty), "rows with empty strings in pc_data_export_pc6\n")
+    print(head(rows_with_empty, 3))
+  }
+  
+  # Test should fail if there are any missing values
+  expect_equal(nrow(rows_with_na), 0,
+               info = paste("Found", nrow(rows_with_na), "rows with NA values in pc_data_export_pc6"))
+  
+  expect_equal(nrow(rows_with_empty), 0,
+               info = paste("Found", nrow(rows_with_empty), "rows with empty strings in pc_data_export_pc6"))
 })
 
 #---------------------------------------------------------

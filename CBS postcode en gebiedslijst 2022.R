@@ -6,8 +6,8 @@
 # ------------
 # Gebruikershandleiding: 
 # Download de gebiedsindelingen van de CBS-website: 
-#   - Provincie-gemeente indeling: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2023
-#   - Buurt, wijk, gemeente: https://www.cbs.nl/nl-nl/maatwerk/2023/35/buurt-wijk-en-gemeente-2023-voor-postcode-huisnummer
+#   - Provincie-gemeente indeling: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2022
+#   - Buurt, wijk, gemeente: https://www.cbs.nl/nl-nl/maatwerk/2022/37/buurt-wijk-en-gemeente-2022-voor-postcode-huisnummer
 # - Pak de bestanden uit en zet ze in dezelfde map als dit script.
 # - Set de working directory van R (studio) naar de map waarin dit script zich bevindt.
 # - Run het script
@@ -20,8 +20,8 @@
 # ------------
 # User Manual: 
 # Download the area classifications from the CBS website: 
-#     - Province-municipality classification: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2023
-#     - Neighborhood, district, municipality: https://www.cbs.nl/nl-nl/maatwerk/2023/35/buurt-wijk-en-gemeente-2023-voor-postcode-huisnummer
+#     - Province-municipality classification: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2022
+#     - Neighborhood, district, municipality: https://www.cbs.nl/nl-nl/maatwerk/2022/37/buurt-wijk-en-gemeente-2022-voor-postcode-huisnummer
 # - Extract the files and place them in the same folder as this script.
 # - Set de working directory van R (studio) naar de map waarin dit script zich bevindt.
 # - Run the script
@@ -48,32 +48,32 @@ install_and_load("readxl")
 install_and_load("testthat")
 
 # Input variables
-year <- "2023"
+year <- "2022"
 huisnummer <- "huisnummer"
 postcode <- "pc6"
 
 # Read the buurt data
-buurt_data <- read_delim(paste0("buurt_", year, ".csv"), 
+buurt_data <- read_delim(paste0("brt", year, ".csv"), 
                         delim = ";", 
                         locale = locale(encoding = "UTF-8"))
 
 # Read the wijk data
-wijk_data <- read_delim(paste0("wijk_", year, ".csv"), 
+wijk_data <- read_delim(paste0("Wijken", year, ".csv"), 
                        delim = ";", 
                        locale = locale(encoding = "UTF-8"))
 
 # Read the gemeente data
-gemeente_data <- read_delim(paste0("gemeenten_", year, ".csv"), 
+gemeente_data <- read_delim(paste0("gem", year, ".csv"), 
                            delim = ";", 
                            locale = locale(encoding = "UTF-8"))
 
 # Read the postal code data with correct delimiter and encoding
-pc_data <- read_delim(paste0("pc6hnr20230801_gwb.csv"), 
+pc_data <- read_delim(paste0("pc6hnr20220801_gwb.csv"), 
                      delim = ";", 
                      locale = locale(encoding = "UTF-8"))
 
 # Read provincie data (Excel version)
-provincie_data <- read_excel(paste0("Gemeenten alfabetisch 2023.xlsx"), sheet = "Gemeenten_alfabetisch")
+provincie_data <- read_excel(paste0("Gemeenten alfabetisch 2022.xlsx"), sheet = "Gemeenten_alfabetisch_2022")
 
 #---------------------------------------------------------
 # Data Cleaning
@@ -89,6 +89,10 @@ names(provincie_data) <- tolower(names(provincie_data))
 provincie_data <- provincie_data %>% 
   select(-gemeentenaam)
 
+# Drop columns gm_2022, gm2022, gmnaam, wk_2022, wk_naam from buurt_data
+buurt_data <- buurt_data %>% 
+  select(-gm2022, -gm_2022, -gm_naam, -wk_2022, -wk2022, -wk_naam)
+
 # Rename columns to include year
 provincie_data <- provincie_data %>% 
   rename(!!paste0("gemeente", year) := gemeentecode,
@@ -96,6 +100,16 @@ provincie_data <- provincie_data %>%
          !!paste0("provincie", year) := provinciecode,
          !!paste0("provinciecodepv", year) := provinciecodepv,
          !!paste0("provincienaam", year) := provincienaam)
+
+# Rename columns where they mismatch
+buurt_data <- buurt_data %>% 
+  rename(!!paste0("buurt", year) := buurtcode2022)
+
+wijk_data <- wijk_data %>% 
+  rename(!!paste0("wijk", year) := wijkcode2022)
+
+gemeente_data <- gemeente_data %>% 
+  rename(!!paste0("gemeente", year) := gemcode2022)
 
 #---------------------------------------------------------
 # Merge the data
@@ -108,6 +122,16 @@ pc_data_export <- pc_data %>%
 pc_data_export <- pc_data_export %>% 
   left_join(wijk_data, by = paste0("wijk", year))
 
+# Convert gemeente columns to character to ensure compatible types for joining
+pc_data_export <- pc_data_export %>% 
+  mutate(!!paste0("gemeente", year) := as.numeric(.data[[paste0("gemeente", year)]]))
+
+gemeente_data <- gemeente_data %>% 
+  mutate(!!paste0("gemeente", year) := as.numeric(.data[[paste0("gemeente", year)]]))
+
+provincie_data <- provincie_data %>% 
+  mutate(!!paste0("gemeente", year) := as.numeric(.data[[paste0("gemeente", year)]]))
+
 # Merge gemeente data into postal code data
 pc_data_export <- pc_data_export %>% 
   left_join(gemeente_data, by = paste0("gemeente", year))
@@ -115,6 +139,7 @@ pc_data_export <- pc_data_export %>%
 # Merge provincie data into postal code data
 pc_data_export <- pc_data_export %>% 
   left_join(provincie_data, by = paste0("gemeente", year))
+  
 
 #---------------------------------------------------------
 # Add full CBS Coding system
