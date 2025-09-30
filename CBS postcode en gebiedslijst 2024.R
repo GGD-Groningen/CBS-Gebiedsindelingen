@@ -6,8 +6,8 @@
 # ------------
 # Gebruikershandleiding: 
 # Download de gebiedsindelingen van de CBS-website: 
-#   - Provincie-gemeente indeling: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2025
-#   - Buurt, wijk, gemeente 2025: https://www.cbs.nl/nl-nl/maatwerk/2025/38/buurt-wijk-en-gemeente-2025-voor-postcode-huisnummer
+#   - Provincie-gemeente indeling: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2024
+#   - Buurt, wijk, gemeente: https://www.cbs.nl/nl-nl/maatwerk/2024/35/buurt-wijk-en-gemeente-2024-voor-postcode-huisnummer
 # - Pak de bestanden uit en zet ze in dezelfde map als dit script.
 # - Set de working directory van R (studio) naar de map waarin dit script zich bevindt.
 # - Run het script
@@ -20,8 +20,8 @@
 # ------------
 # User Manual: 
 # Download the area classifications from the CBS website: 
-#     - Province-municipality classification: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2025
-#     - Neighborhood, district, municipality 2025: https://www.cbs.nl/nl-nl/maatwerk/2025/38/buurt-wijk-en-gemeente-2025-voor-postcode-huisnummer
+#     - Province-municipality classification: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2024
+#     - Neighborhood, district, municipality: https://www.cbs.nl/nl-nl/maatwerk/2024/35/buurt-wijk-en-gemeente-2024-voor-postcode-huisnummer
 # - Extract the files and place them in the same folder as this script.
 # - Set de working directory van R (studio) naar de map waarin dit script zich bevindt.
 # - Run the script
@@ -48,7 +48,7 @@ install_and_load("readxl")
 install_and_load("testthat")
 
 # Input variables
-year <- "2025"
+year <- "2024"
 huisnummer <- "huisnummer"
 postcode <- "pc6"
 
@@ -68,12 +68,12 @@ gemeente_data <- read_delim(paste0("gem_", year, ".csv"),
                            locale = locale(encoding = "UTF-8"))
 
 # Read the postal code data with correct delimiter and encoding
-pc_data <- read_delim(paste0("pc6hnr20250801_gwb.csv"), 
-                     delim = ";", 
+pc_data <- read_delim(paste0("pc6hnr20240801_gwb.csv"), 
+                     delim = ",", 
                      locale = locale(encoding = "UTF-8"))
 
 # Read provincie data (Excel version)
-provincie_data <- read_excel(paste0("gemeenten-alfabetisch-2025.xlsx"), sheet = "Gemeenten_alfabetisch")
+provincie_data <- read_excel(paste0("gemeenten-alfabetisch-2024.xlsx"), sheet = "Gemeenten_alfabetisch")
 
 #---------------------------------------------------------
 # Data Cleaning
