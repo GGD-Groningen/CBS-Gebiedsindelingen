@@ -1,5 +1,5 @@
 #####################################################################
-# Complete adreslijst + pc6 2025 obv CBS Gebiedsindeling 2025
+# Complete adreslijst + pc6 obv CBS Gebiedsindeling
 #####################################################################
 #
 # Nederlands
@@ -7,13 +7,13 @@
 # Gebruikershandleiding: 
 # Download de gebiedsindelingen van de CBS-website: 
 #   - Provincie-gemeente indeling: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2025
-#   - Buurt, wijk, gemeente 2025: https://www.cbs.nl/nl-nl/maatwerk/2025/38/buurt-wijk-en-gemeente-2025-voor-postcode-huisnummer
+#   - Buurt, wijk, gemeente: https://www.cbs.nl/nl-nl/maatwerk/2025/38/buurt-wijk-en-gemeente-2025-voor-postcode-huisnummer
 # - Pak de bestanden uit en zet ze in dezelfde map als dit script.
 # - Set de working directory van R (studio) naar de map waarin dit script zich bevindt.
 # - Run het script
 # - Je krijgt 2 bestanden terug van het script:
-#     - pc_2025_pc6_only.csv: Alleen pc6
-#     - pc_2025_pc6_huisnummer.csv: pc6 en huisnummer
+#     - pc_*jaartal*_pc6_only.csv: Alleen pc6
+#     - pc_*jaartal*_pc6_huisnummer.csv: pc6 en huisnummer
 # - De gekoppelde databestanden bevatten: pc6 (+evt huisnummer), buurt, buurtnaam, wijk, wijknaam, gemeente, gemeentenaam, provincie, provincienaam.
 #
 # English
@@ -21,13 +21,13 @@
 # User Manual: 
 # Download the area classifications from the CBS website: 
 #     - Province-municipality classification: https://www.cbs.nl/nl-nl/onze-diensten/methoden/classificaties/overig/gemeentelijke-indelingen-per-jaar/indeling-per-jaar/gemeentelijke-indeling-op-1-januari-2025
-#     - Neighborhood, district, municipality 2025: https://www.cbs.nl/nl-nl/maatwerk/2025/38/buurt-wijk-en-gemeente-2025-voor-postcode-huisnummer
+#     - Neighborhood, district, municipality: https://www.cbs.nl/nl-nl/maatwerk/2025/38/buurt-wijk-en-gemeente-2025-voor-postcode-huisnummer
 # - Extract the files and place them in the same folder as this script.
 # - Set de working directory van R (studio) naar de map waarin dit script zich bevindt.
 # - Run the script
 # - You will get 2 files back from the script:
-#     - pc_2025_pc6_only.csv: Only pc6
-#     - pc_2025_pc6_huisnummer.csv: pc6 and house number
+#     - pc_*jaartal*_pc6_only.csv: Only pc6
+#     - pc_*jaartal*_pc6_huisnummer.csv: pc6 and house number
 # - The linked data files contain: pc6 (+optionally house number), neighborhood, neighborhood name, district, district name, municipality, municipality name, province, province name.
 ## 
 #####################################################################
