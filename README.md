@@ -9,10 +9,15 @@ Er komen twee landelijke lijsten uit het script. Een met alleen de unieke PC6'en
 
 Deze bestanden bevatten:
 - PC6 en evt huisnummer
-- Buurtnaam en buurtcode
-- Wijknaam en wijkcode
-- Gemeentenaam en gemeentecode
-- Provincienaam en provinciecode
+- Buurtnaam en buurtcodes
+- Wijknaam en wijkcodes
+- Gemeentenaam en gemeentecodes
+- Provincienaam en provinciecodes
+
+De codes worden zowel uitgevoerd in het basis format: gemeente Groningen is 14, als in het volledige format GM0014.
 
 # Hoe uit te voeren
 De scripts zijn geschreven in R. Dit is uit te voeren met bijvoorbeeld R Studio.
+
+# Output
+CSV-bestand met UTF-8 codering.
