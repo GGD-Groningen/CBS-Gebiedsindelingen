@@ -130,11 +130,24 @@ pc_data_export <- pc_data_export %>%
 
 # Remove huisnummer column
 pc_data_export_pc6 <- pc_data_export %>% 
-  select(-!!huisnummer)
+  select(-!!sym(huisnummer))
 
 # Remove lines with duplicate pc6
 pc_data_export_pc6 <- pc_data_export_pc6 %>% 
   distinct(!!sym(postcode), .keep_all = TRUE)
+
+# Remove postcode column
+cbs_coderingen_export <- pc_data_export %>% 
+  select(-!!sym(postcode))
+
+# Remove huisnummer column
+cbs_coderingen_export <- cbs_coderingen_export %>% 
+  select(-!!sym(huisnummer))
+
+# Remove duplicate lines
+cbs_coderingen_export <- cbs_coderingen_export %>% 
+  distinct(!!sym(paste0("buurtcodebu", year)), .keep_all = TRUE)
+   
 
 #---------------------------------------------------------
 # Data validation
@@ -229,7 +242,7 @@ test_that("every row in pc_data_export_pc6 is fully filled", {
 
 # Write the data to a csv file
 tryCatch({
-  output_file <- paste0("pc_", year, "_", postcode, "_", huisnummer, ".csv")
+  output_file <- paste0("gemeentecodes-pc6-hnr-", year, "-landelijk", ".csv")
   write_delim(pc_data_export, output_file, delim = ";")
   cat("✅ Successfully exported data to", output_file, "\n")
   cat("   - Total rows exported:", format(nrow(pc_data_export), big.mark = ","), "\n")
@@ -242,12 +255,25 @@ tryCatch({
 })
 
 tryCatch({
-  output_file <- paste0("pc_", year, "_pc6_only.csv")
+  output_file <- paste0("gemeentecodes-pc6-", year, "-landelijk", ".csv")
   write_delim(pc_data_export_pc6, output_file, delim = ";")
   cat("✅ Successfully exported data to", output_file, "\n")
   cat("   - Total rows exported:", format(nrow(pc_data_export_pc6), big.mark = ","), "\n")
   cat("   - Total columns exported:", ncol(pc_data_export_pc6), "\n")
   cat("   - File size:", format(object.size(pc_data_export_pc6) / 1024 / 1024, digits = 2), "MB\n")
+}, error = function(e) {
+  cat("❌ ERROR: Failed to export data to CSV\n")
+  cat("   Error:", e$message, "\n")
+  quit(status = 1)
+})
+
+tryCatch({
+  output_file <- paste0("cbs-coderingen-", year, "-landelijk", ".csv")
+  write_delim(cbs_coderingen_export, output_file, delim = ";")
+  cat("✅ Successfully exported data to", output_file, "\n")
+  cat("   - Total rows exported:", format(nrow(cbs_coderingen_export), big.mark = ","), "\n")
+  cat("   - Total columns exported:", ncol(cbs_coderingen_export), "\n")
+  cat("   - File size:", format(object.size(cbs_coderingen_export) / 1024 / 1024, digits = 2), "MB\n")
 }, error = function(e) {
   cat("❌ ERROR: Failed to export data to CSV\n")
   cat("   Error:", e$message, "\n")
